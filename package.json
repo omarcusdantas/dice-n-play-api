@@ -1,0 +1,31 @@
+{
+    "name": "dice-n-play-api",
+    "type": "module",
+    "version": "1.0.0",
+    "description": "",
+    "main": "./src/app.js",
+    "scripts": {
+        "start": "node ./src/app.js",
+        "dev": "nodemon ./src/app.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/omarcusdantas/dice-n-play-api"
+    },
+    "author": "Marcus Dantas",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/omarcusdantas/dice-n-play-api/issues"
+    },
+    "homepage": "https://github.com/omarcusdantas/dice-n-play-api",
+    "dependencies": {
+        "dayjs": "^1.11.9",
+        "dotenv": "^16.3.1",
+        "http-status": "^1.7.0",
+        "joi": "^17.9.2",
+        "pg": "^8.11.1"
+    },
+    "devDependencies": {
+        "nodemon": "^3.0.1"
+    }
+}
