@@ -15,6 +15,14 @@ export default async function customersRouter(req, res) {
             res.writeHead(httpStatus.UNPROCESSABLE_ENTITY, { "Content-Type": "text/plain" });
             res.end("Body is not a valid JSON");   
         }
+    } else if (req.method === "PUT" && req.path.startsWith("/customers/")){
+        try {
+            req.body = await parseBody(req);
+            customersController.update(req, res);
+        } catch (error) {
+            res.writeHead(httpStatus.UNPROCESSABLE_ENTITY, { "Content-Type": "text/plain" });
+            res.end("Body is not a valid JSON");   
+        }
     } else {
         res.writeHead(httpStatus.METHOD_NOT_ALLOWED, { "Content-Type": "text/plain" });
         res.end("Method Not Allowed");

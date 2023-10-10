@@ -45,10 +45,20 @@ function create(name, phone, birthday) {
     ]);
 }
 
+function updateById(id, name, phone, birthday) {
+    return db.query("UPDATE customers SET name=$1, phone=$2, birthday=to_date($3, 'DD-MM-YYYY') WHERE id=$4;", [
+        name,
+        phone,
+        birthday,
+        id,
+    ]);
+}
+
 const customersRepository = {
     findAll,
     findById,
     findByPhone,
     create,
+    updateById,
 }
 export default customersRepository;

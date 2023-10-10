@@ -1,6 +1,7 @@
 import httpStatus from "http-status";
 import { schemaCustomer } from "../schemas/customers.schemas.js";
 import customersRepository from "../respositories/customers.repository.js";
+import { c } from "tar";
 
 async function getAll(req, res) {
     const { phone, offset, limit, order, desc } = req.query;
@@ -49,15 +50,41 @@ async function create(req, res) {
     const { name, phone, birthday } = req.body;
 
     try {
-        const foundUser = (await customersRepository.findByPhone(phone)).rows[0];
-        if (foundUser) {
+        const foundCustomer = (await customersRepository.findByPhone(phone)).rows[0];
+        if (foundCustomer) {
             res.writeHead(httpStatus.CONFLICT, { "Content-Type": "text/plain" });
-            return res.end("Customer already regitered");
+            return res.end("Phone already registered");
         }
-        
+
         await customersRepository.create(name, phone, birthday);
         res.writeHead(httpStatus.CREATED, { "Content-Type": "text/plain" });
         return res.end("Customer created");
+    } catch (error) {
+        console.log(error);
+        res.writeHead(httpStatus.INTERNAL_SERVER_ERROR, { "Content-Type": "text/plain" });
+        return res.end("Try again later");
+    }
+}
+
+async function update(req, res) {
+    const id = Number(req.path.split("/").pop());
+    if (isNaN(id) || !id) {
+        res.writeHead(httpStatus.BAD_REQUEST, { "Content-Type": "text/plain" });
+        return res.end("Insert valid Id");
+    }
+
+    const { name, phone, birthday } = req.body;
+
+    try {
+        const foundCustomer = (await customersRepository.findByPhone(phone)).rows[0];
+        if (foundCustomer && foundCustomer.phone !== id) {
+            res.writeHead(httpStatus.CONFLICT, { "Content-Type": "text/plain" });
+            return res.end("Phone already regitered");
+        }
+
+        await customersRepository.updateById(id, name, phone, birthday);
+        res.writeHead(httpStatus.OK, { "Content-Type": "text/plain" });
+        return res.end("Customer updated");
     } catch (error) {
         console.log(error);
         res.writeHead(httpStatus.INTERNAL_SERVER_ERROR, { "Content-Type": "text/plain" });
@@ -69,5 +96,6 @@ const customersController = {
     getAll,
     getById,
     create,
+    update,
 };
 export default customersController;
