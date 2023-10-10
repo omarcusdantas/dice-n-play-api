@@ -1,6 +1,6 @@
 import { db } from "../database/database.connection.js";
 
-async function findAll(name, offset, limit, order, desc) {
+function findAll(name, offset, limit, order, desc) {
     let query = `SELECT * FROM games`;
     const queryParams = [];
 
@@ -26,16 +26,14 @@ async function findAll(name, offset, limit, order, desc) {
         queryParams.push(limit);
     }
 
-    const games = await db.query(query, queryParams);
-    return games.rows;
+    return db.query(query, queryParams);
 }
 
-async function findByName(name) {
-    const response = await db.query("SELECT * FROM games WHERE name=$1", [name]);
-    return response.rows[0];
+function findByName(name) {
+    return db.query("SELECT * FROM games WHERE name=$1", [name]);
 }
 
-async function create(name, stockTotal, pricePerDay) {
+function create(name, stockTotal, pricePerDay) {
     return db.query("INSERT INTO games (name, stock, price_per_day) VALUES ($1, $2, $3);", [
         name,
         stockTotal,

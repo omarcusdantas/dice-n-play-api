@@ -1,14 +1,16 @@
 import httpStatus from "http-status";
-import gamesController from "../controllers/games.controller.js";
+import customersController from "../controllers/customers.controller.js";
 import parseBody from "../middlewares/parseBody.js";
 
-export default async function gamesRouter(req, res) {
-    if (req.method === "GET") {
-        gamesController.getAll(req, res);
+export default async function customersRouter(req, res) {
+    if (req.method === "GET" && req.path === "/customers") {
+        customersController.getAll(req, res);
+    } else if (req.method === "GET" && req.path.startsWith("/customers/")) {
+        customersController.getById(req, res);
     } else if (req.method === "POST") {
         try {
             req.body = await parseBody(req);
-            gamesController.create(req, res);
+            customersController.create(req, res);
         } catch (error) {
             res.writeHead(httpStatus.UNPROCESSABLE_ENTITY, { "Content-Type": "text/plain" });
             res.end("Body is not a valid JSON");   
