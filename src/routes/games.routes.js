@@ -4,7 +4,7 @@ import parseBody from "../middlewares/parseBody.js";
 
 export default async function gamesRouter(req, res) {
     if (req.method === "GET") {
-        return;
+        gamesController.get(req, res);
     } else if (req.method === "POST") {
         try {
             req.body = await parseBody(req);

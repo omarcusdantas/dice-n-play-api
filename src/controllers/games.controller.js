@@ -2,6 +2,20 @@ import httpStatus from "http-status";
 import { schemaGame } from "../schemas/games.schemas.js";
 import gamesRepository from "../respositories/games.repository.js";
 
+async function get(req, res) {
+    const { name, offset, limit, order, desc } = req.query;
+
+    try {
+        const games = await gamesRepository.findAll(name, offset, limit, order, desc);
+        res.writeHead(httpStatus.OK, { "Content-Type": "application/json" });
+        return res.end(JSON.stringify(games));
+    } catch (error) {
+        console.log(error);
+        res.writeHead(httpStatus.INTERNAL_SERVER_ERROR, { "Content-Type": "text/plain" });
+        return res.end("Try again later");
+    }
+}
+
 async function create(req, res) {
     const validateBody = schemaGame.validate(req.body, { abortEarly: false });
     if (validateBody.error) {
@@ -11,7 +25,7 @@ async function create(req, res) {
     const { name, stock, pricePerDay } = req.body;
 
     try {
-        const foundGame = await gamesRepository.getByName(name);
+        const foundGame = await gamesRepository.findByName(name);
         if (foundGame) {
             res.writeHead(httpStatus.CONFLICT, { "Content-Type": "text/plain" });
             return res.end("Game already regitered");
@@ -27,5 +41,8 @@ async function create(req, res) {
     }
 }
 
-const gamesController = { create };
+const gamesController = { 
+    get,
+    create,
+};
 export default gamesController;
