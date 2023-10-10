@@ -1,11 +1,12 @@
 import httpStatus from "http-status";
+import { schemaCustomer } from "../schemas/customers.schemas.js";
 import customersRepository from "../respositories/customers.repository.js";
 
 async function getAll(req, res) {
-    const { cpf, offset, limit, order, desc } = req.query;
+    const { phone, offset, limit, order, desc } = req.query;
 
     try {
-        const customers = (await customersRepository.findAll(cpf, offset, limit, order, desc)).rows;
+        const customers = (await customersRepository.findAll(phone, offset, limit, order, desc)).rows;
         res.writeHead(httpStatus.OK, { "Content-Type": "application/json" });
         return res.end(JSON.stringify(customers));
     } catch (error) {
@@ -16,7 +17,11 @@ async function getAll(req, res) {
 }
 
 async function getById(req, res) {
-    const id = req.path.split("/").pop();
+    const id = Number(req.path.split("/").pop());
+    if (isNaN(id) || !id) {
+        res.writeHead(httpStatus.BAD_REQUEST, { "Content-Type": "text/plain" });
+        return res.end("Insert valid Id");
+    }
 
     try {
         const customer = (await customersRepository.findById(id)).rows[0];
@@ -34,7 +39,31 @@ async function getById(req, res) {
     }
 }
 
-async function create(req, res) {}
+async function create(req, res) {
+    const validateBody = schemaCustomer.validate(req.body, { abortEarly: false });
+    if (validateBody.error) {
+        res.writeHead(httpStatus.UNPROCESSABLE_ENTITY, { "Content-Type": "text/plain" });
+        return res.end(validateBody.error.details.map((detail) => detail.message).join("\n"));
+    }
+
+    const { name, phone, birthday } = req.body;
+
+    try {
+        const foundUser = (await customersRepository.findByPhone(phone)).rows[0];
+        if (foundUser) {
+            res.writeHead(httpStatus.CONFLICT, { "Content-Type": "text/plain" });
+            return res.end("Customer already regitered");
+        }
+        
+        await customersRepository.create(name, phone, birthday);
+        res.writeHead(httpStatus.CREATED, { "Content-Type": "text/plain" });
+        return res.end("Customer created");
+    } catch (error) {
+        console.log(error);
+        res.writeHead(httpStatus.INTERNAL_SERVER_ERROR, { "Content-Type": "text/plain" });
+        return res.end("Try again later");
+    }
+}
 
 const customersController = {
     getAll,

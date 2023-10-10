@@ -1,12 +1,12 @@
 import { db } from "../database/database.connection.js";
 
-async function findAll(cpf, offset, limit, order, desc) {
-    let query = `SELECT id, name, phone, TO_CHAR(birthday, 'YYYY-MM-DD') AS birthday FROM customers`;
+async function findAll(phone, offset, limit, order, desc) {
+    let query = `SELECT id, name, phone, TO_CHAR(birthday, 'DD-MM-YYYY') AS birthday FROM customers`;
     const queryParams = [];
 
-    if (cpf) {
-        query += ` WHERE cpf LIKE $${queryParams.length + 1}`;
-        queryParams.push(cpf + "%");
+    if (phone) {
+        query += ` WHERE phone LIKE $${queryParams.length + 1}`;
+        queryParams.push(phone + "%");
     }
 
     if (order) {
@@ -30,11 +30,25 @@ async function findAll(cpf, offset, limit, order, desc) {
 }
 
 function findById(id) {
-    return db.query("SELECT * FROM customers WHERE id=$1", [id]);
+    return db.query("SELECT id, name, phone, TO_CHAR(birthday, 'DD-MM-YYYY') AS birthday FROM customers WHERE id=$1", [id]);
+}
+
+function findByPhone(phone) {
+    return db.query("SELECT id, name, phone, TO_CHAR(birthday, 'DD-MM-YYYY') AS birthday FROM customers WHERE phone=$1", [phone]);
+}
+
+function create(name, phone, birthday) {
+    return db.query("INSERT INTO customers (name, phone, birthday) VALUES ($1, $2, to_date($3, 'DD-MM-YYYY'));", [
+        name,
+        phone,
+        birthday,
+    ]);
 }
 
 const customersRepository = {
     findAll,
     findById,
+    findByPhone,
+    create,
 }
 export default customersRepository;

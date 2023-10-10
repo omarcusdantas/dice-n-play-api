@@ -22,6 +22,7 @@ async function create(req, res) {
         res.writeHead(httpStatus.UNPROCESSABLE_ENTITY, { "Content-Type": "text/plain" });
         return res.end(validateBody.error.details.map((detail) => detail.message).join("\n"));
     }
+    
     const { name, stock, pricePerDay } = req.body;
 
     try {

@@ -19,6 +19,7 @@
     },
     "homepage": "https://github.com/omarcusdantas/dice-n-play-api",
     "dependencies": {
+        "@joi/date": "^2.1.0",
         "dayjs": "^1.11.9",
         "dotenv": "^16.3.1",
         "http-status": "^1.7.0",
