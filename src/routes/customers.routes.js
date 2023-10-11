@@ -1,4 +1,4 @@
-import httpStatus from "http-status";
+import sendErrorResponse from "../errors/sendErrorResponse.js";
 import customersController from "../controllers/customers.controller.js";
 import parseBody from "../middlewares/parseBody.js";
 import validateSchema from "../middlewares/validateSchema.js";
@@ -18,7 +18,6 @@ export default async function customersRouter(req, res) {
         await validateSchema(res, req.body, schemaCustomer);
         customersController.update(req, res);
     } else {
-        res.writeHead(httpStatus.METHOD_NOT_ALLOWED, { "Content-Type": "text/plain" });
-        res.end("Method Not Allowed");
+        sendErrorResponse(res, { type: "methodNotAllowed" });
     }
 }

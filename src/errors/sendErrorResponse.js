@@ -11,6 +11,9 @@ export default function sendErrorResponse(res, error) {
         case "notFound":
             res.writeHead(httpStatus.NOT_FOUND, { "Content-Type": "text/plain" });
             return res.end(error.message);
+        case "methodNotAllowed":
+            res.writeHead(httpStatus.METHOD_NOT_ALLOWED, { "Content-Type": "text/plain" });
+            return res.end("Method not allowed for this route"); 
         default:
             res.writeHead(httpStatus.INTERNAL_SERVER_ERROR, { "Content-Type": "text/plain" });
             return res.end("Try again later");

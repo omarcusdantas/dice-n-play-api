@@ -1,4 +1,4 @@
-import httpStatus from "http-status";
+import sendErrorResponse from "../errors/sendErrorResponse.js";
 import gamesController from "../controllers/games.controller.js";
 import parseBody from "../middlewares/parseBody.js";
 import validateSchema from "../middlewares/validateSchema.js";
@@ -12,7 +12,6 @@ export default async function gamesRouter(req, res) {
         await validateSchema(res, req.body, schemaGame);
         gamesController.create(req, res);
     } else {
-        res.writeHead(httpStatus.METHOD_NOT_ALLOWED, { "Content-Type": "text/plain" });
-        res.end("Method Not Allowed");
+        sendErrorResponse(res, { type: "methodNotAllowed" });
     }
 }
