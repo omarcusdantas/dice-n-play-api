@@ -1,4 +1,4 @@
-import customersRepository from "../respositories/customers.repository.js";
+import customersRepository from "../repositories/customers.repository.js";
 import sendErrorResponse from "../errors/sendErrorResponse.js";
 
 async function getAll(res, phone, offset, limit, order, desc) {

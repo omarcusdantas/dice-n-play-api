@@ -1,4 +1,4 @@
-import gamesRepository from "../respositories/games.repository.js";
+import gamesRepository from "../repositories/games.repository.js";
 import sendErrorResponse from "../errors/sendErrorResponse.js";
 
 async function getAll(res, name, offset, limit, order, desc) {

@@ -1,7 +1,7 @@
 import dayjs from "dayjs";
-import rentalsRepository from "../respositories/rentals.repository.js";
-import customersRepository from "../respositories/customers.repository.js";
-import gamesRepository from "../respositories/games.repository.js";
+import rentalsRepository from "../repositories/rentals.repository.js";
+import customersRepository from "../repositories/customers.repository.js";
+import gamesRepository from "../repositories/games.repository.js";
 import sendErrorResponse from "../errors/sendErrorResponse.js";
 
 async function getAll(res, customerId, gameId, offset, limit, order, desc) {
