@@ -41,9 +41,14 @@ function create(name, stockTotal, pricePerDay) {
     ]);
 }
 
+function reduceStockByGameId(gameId) {
+    return db.query("UPDATE games SET stock=stock-1 WHERE id=$1", [gameId]);
+}
+
 const gamesRepository = {
     findAll,
     findByName,
     create,
+    reduceStockByGameId,
 };
 export default gamesRepository;

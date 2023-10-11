@@ -1,3 +1,5 @@
+import { db } from "../database/database.connection.js";
+
 function getAll(customerId, gameId, offset, limit, order, desc, status, startDate) {
     let query = `
         SELECT 
@@ -23,7 +25,7 @@ function getAll(customerId, gameId, offset, limit, order, desc, status, startDat
 
     if (gameId) {
         query += query.includes("WHERE") ? " AND " : " WHERE ";
-        query += `rentals."gameId" = $${queryParams.length + 1}`;
+        query += `rentals.game_id = $${queryParams.length + 1}`;
         queryParams.push(gameId);
     }
 
@@ -76,6 +78,22 @@ async function getById(id) {
     );
 }
 
+async function getNotCompletedRentalsByGameId(gameId) {
+    return db.query(`
+        SELECT 
+            customer_id AS "customerId", 
+            game_id AS "gameId", 
+            days_rented AS "daysRented", 
+            rent_date AS "rentDate", 
+            original_price AS "originalPrice", 
+            return_date AS "returnDate", 
+            delay_fee AS "delayFee" 
+        FROM rentals 
+        WHERE game_id=$1 AND return_date IS NULL`,
+        [gameId]
+    );
+}
+
 async function create(customerId, gameId, daysRented, today, total) {
     return db.query(
         `INSERT INTO rentals 
@@ -85,10 +103,15 @@ async function create(customerId, gameId, daysRented, today, total) {
     );
 }
 
-async function deleteById(id) {
-    return db.query("DELETE FROM rentals WHERE id=$1", [id]);
-}
-
 async function updateById(id, today, delayFee) {
     return db.query("UPDATE rentals SET return_date=$1, delay_fee=$2 WHERE id=$3;", [today, delayFee, id]);
 }
+
+const rentalsRepository = {
+    getAll,
+    getById,
+    getNotCompletedRentalsByGameId,
+    create,
+    updateById,
+};
+export default rentalsRepository;
