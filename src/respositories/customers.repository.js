@@ -30,11 +30,16 @@ async function findAll(phone, offset, limit, order, desc) {
 }
 
 function findById(id) {
-    return db.query("SELECT id, name, phone, TO_CHAR(birthday, 'DD-MM-YYYY') AS birthday FROM customers WHERE id=$1", [id]);
+    return db.query("SELECT id, name, phone, TO_CHAR(birthday, 'DD-MM-YYYY') AS birthday FROM customers WHERE id=$1", [
+        id,
+    ]);
 }
 
 function findByPhone(phone) {
-    return db.query("SELECT id, name, phone, TO_CHAR(birthday, 'DD-MM-YYYY') AS birthday FROM customers WHERE phone=$1", [phone]);
+    return db.query(
+        "SELECT id, name, phone, TO_CHAR(birthday, 'DD-MM-YYYY') AS birthday FROM customers WHERE phone=$1",
+        [phone]
+    );
 }
 
 function create(name, phone, birthday) {
@@ -60,5 +65,5 @@ const customersRepository = {
     findByPhone,
     create,
     updateById,
-}
+};
 export default customersRepository;
