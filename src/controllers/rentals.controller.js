@@ -1,5 +1,6 @@
 import httpStatus from "http-status";
 import rentalsService from "../services/rentals.service.js";
+import sendErrorResponse from "../errors/sendErrorResponse.js";
 
 async function getAll(req, res) {
     const { customerId, gameId, offset, limit, order, desc } = req.query;
@@ -31,7 +32,7 @@ async function returnById(req, res) {
     }
     
     try {
-        await rentalsService.return(res, id);
+        await rentalsService.returnById(res, id);
         res.writeHead(httpStatus.OK, { "Content-Type": "text/plain" });
         return res.end("Rental returned");
     } catch (error) {

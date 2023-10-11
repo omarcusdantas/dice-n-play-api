@@ -11,8 +11,8 @@ async function getAll(res, customerId, gameId, offset, limit, order, desc) {
         const formattedRentals = rentals.rows.map((rental) => {
             const formattedRental = {
                 ...rental,
-                returnDate: rental.returnDate ? dayjs(rental.returnDate).format("YYYY-MM-DD") : null,
-                rentDate: dayjs(rental.rentDate).format("YYYY-MM-DD"),
+                returnDate: rental.returnDate ? dayjs(rental.returnDate).format("DD-MM-YYYY") : null,
+                rentDate: dayjs(rental.rentDate).format("DD-MM-YYYY"),
                 customer: {
                     id: rental.customerId,
                     name: rental.customerName,
@@ -29,7 +29,7 @@ async function getAll(res, customerId, gameId, offset, limit, order, desc) {
         return formattedRentals;
     } catch (error) {
         console.log(error);
-        sendErrorResponse(res);
+        sendErrorResponse(res, { type: "serverError" });
     }
 }
 
@@ -48,24 +48,23 @@ async function create(res, customerId, gameId, daysRented) {
         }
 
         const gameRentals = await rentalsRepository.getNotCompletedRentalsByGameId(gameId);
-        if (gameRentals.rowCount >= game.rows[0].stock || game.rows[0].stock === 0) {
+        if (gameRentals.rowCount >= game.rows[0].stock) {
             sendErrorResponse(res, { type: "badRequest", message: "Game is not available" });
             return;
         }
 
-        await gamesRepository.reduceStockByGameId(gameId);
-        const today = dayjs().format("YYYY-MM-DD");
+        const today = dayjs().format("DD-MM-YYYY");
         const total = daysRented * game.rows[0].pricePerDay;
         await rentalsRepository.create(customerId, gameId, daysRented, today, total);
     } catch (error) {
         console.log(error);
-        sendErrorResponse(res);
+        sendErrorResponse(res, { type: "serverError" });
     }
 }
 
 async function returnById(res, id) {
     try {
-        const rental = await rentalsRepository.getById(id);
+        const rental = await rentalsRepository.findById(id);
         if (!rental.rows[0]) {
             sendErrorResponse(res, { type: "notFound", message: "Rental not found" });
             return;
@@ -80,12 +79,12 @@ async function returnById(res, id) {
         const daysPassed = dayjs().diff(dayjs(rentDate), "days");
         const pricePerDay = originalPrice / daysRented;
         const delayFee = daysPassed > daysRented ? pricePerDay * (daysPassed - daysRented) : null;
-        const today = dayjs().format("YYYY-MM-DD");
+        const today = dayjs().format("DD-MM-YYYY");
 
         await rentalsRepository.updateById(id, today, delayFee);
     } catch (error) {
         console.log(error);
-        sendErrorResponse(res);
+        sendErrorResponse(res, { type: "serverError" });
     }
 }
 

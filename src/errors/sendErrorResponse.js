@@ -13,7 +13,13 @@ export default function sendErrorResponse(res, error) {
             return res.end(error.message);
         case "methodNotAllowed":
             res.writeHead(httpStatus.METHOD_NOT_ALLOWED, { "Content-Type": "text/plain" });
-            return res.end("Method not allowed for this route"); 
+            return res.end("Method not allowed for this route");
+        case "conflict":
+            res.writeHead(httpStatus.CONFLICT, { "Content-Type": "text/plain" });
+            return res.end(error.message);
+        case "serverError":
+            res.writeHead(httpStatus.INTERNAL_SERVER_ERROR, { "Content-Type": "text/plain" });
+            return res.end("Internal server error, try again later");
         default:
             res.writeHead(httpStatus.INTERNAL_SERVER_ERROR, { "Content-Type": "text/plain" });
             return res.end("Try again later");

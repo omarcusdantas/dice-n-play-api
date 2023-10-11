@@ -7,7 +7,7 @@ async function getAll(res, phone, offset, limit, order, desc) {
         return customers.rows;
     } catch (error) {
         console.log(error);
-        sendErrorResponse(res);
+        sendErrorResponse(res, { type: "serverError" });
     }
 }
 
@@ -21,7 +21,7 @@ async function getById(res, id) {
         return customer.rows[0];
     } catch (error) {
         console.log(error);
-        sendErrorResponse(res);
+        sendErrorResponse(res, { type: "serverError" });
     }
 }
 
@@ -35,7 +35,7 @@ async function create(res, name, phone, birthday) {
         await customersRepository.create(name, phone, birthday);
     } catch (error) {
         console.log(error);
-        sendErrorResponse(res);
+        sendErrorResponse(res, { type: "serverError" });
     }
 }
 
@@ -49,7 +49,7 @@ async function updateById(res, id, name, phone, birthday) {
         await customersRepository.updateById(id, name, phone, birthday);
     } catch (error) {
         console.log(error);
-        sendErrorResponse(res);
+        sendErrorResponse(res, { type: "serverError" });
     }
 }
 

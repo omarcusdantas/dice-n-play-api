@@ -13,7 +13,6 @@ export default async function rentalsRouter(req, res) {
         rentalsController.create(req, res);
     } else if (req.method === "PUT" && req.path.startsWith("/rentals/return/")) {
         req.body = await parseBody(req);
-        await validateSchema(res, req.body, schemaCustomer);
         rentalsController.returnById(req, res);
     } else {
         sendErrorResponse(res, { type: "methodNotAllowed" });

@@ -1,20 +1,21 @@
 import { db } from "../database/database.connection.js";
 
-function getAll(customerId, gameId, offset, limit, order, desc, status, startDate) {
+function findAll(customerId, gameId, offset, limit, order, desc, status, startDate) {
     let query = `
         SELECT 
-            customer_id AS "customerId",
-            game_id AS "gameId", 
-            days_rented AS "daysRented", 
-            rent_date AS "rentDate", 
-            original_price AS "originalPrice", 
-            return_date AS "returnDate", 
-            delay_fee AS "delayFee" 
+            r.id AS "id",
+            r.customer_id AS "customerId",
+            r.game_id AS "gameId", 
+            r.days_rented AS "daysRented", 
+            r.rent_date AS "rentDate", 
+            r.original_price AS "originalPrice", 
+            r.return_date AS "returnDate", 
+            r.delay_fee AS "delayFee", 
             customers.name AS "customerName", 
             games.name AS "gameName" 
-        FROM rentals 
-        INNER JOIN customers ON rentals.customer_id = customers.id 
-        INNER JOIN games ON rentals.game_id = games.id
+        FROM rentals r
+        INNER JOIN customers ON r.customer_id = customers.id 
+        INNER JOIN games ON r.game_id = games.id
     `;
     const queryParams = [];
 
@@ -61,10 +62,11 @@ function getAll(customerId, gameId, offset, limit, order, desc, status, startDat
     return db.query(query, queryParams);
 }
 
-async function getById(id) {
+async function findById(id) {
     return db.query(
         `
         SELECT 
+            id AS "id",
             customer_id AS "customerId", 
             game_id AS "gameId", 
             days_rented AS "daysRented", 
@@ -81,6 +83,7 @@ async function getById(id) {
 async function getNotCompletedRentalsByGameId(gameId) {
     return db.query(`
         SELECT 
+            id AS "id",
             customer_id AS "customerId", 
             game_id AS "gameId", 
             days_rented AS "daysRented", 
@@ -98,18 +101,18 @@ async function create(customerId, gameId, daysRented, today, total) {
     return db.query(
         `INSERT INTO rentals 
         (customer_id, game_id, days_rented, rent_date, original_price, return_date, delay_fee) 
-        VALUES ($1, $2, $3, $4, $5, null, null)`,
+        VALUES ($1, $2, $3, to_date($4, 'DD-MM-YYYY'), $5, null, null)`,
         [customerId, gameId, daysRented, today, total]
     );
 }
 
 async function updateById(id, today, delayFee) {
-    return db.query("UPDATE rentals SET return_date=$1, delay_fee=$2 WHERE id=$3;", [today, delayFee, id]);
+    return db.query("UPDATE rentals SET return_date=to_date($1, 'DD-MM-YYYY'), delay_fee=$2 WHERE id=$3;", [today, delayFee, id]);
 }
 
 const rentalsRepository = {
-    getAll,
-    getById,
+    findAll,
+    findById,
     getNotCompletedRentalsByGameId,
     create,
     updateById,

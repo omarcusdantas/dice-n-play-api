@@ -25,12 +25,15 @@ function findAll(name, offset, limit, order, desc) {
         query += ` LIMIT $${queryParams.length + 1}`;
         queryParams.push(limit);
     }
-
     return db.query(query, queryParams);
 }
 
 function findByName(name) {
     return db.query(`SELECT name, stock, price_per_day AS "pricePerDay" FROM games WHERE name=$1`, [name]);
+}
+
+function findById(id) {
+    return db.query(`SELECT name, stock, price_per_day AS "pricePerDay" FROM games WHERE id=$1`, [id]);
 }
 
 function create(name, stockTotal, pricePerDay) {
@@ -41,14 +44,10 @@ function create(name, stockTotal, pricePerDay) {
     ]);
 }
 
-function reduceStockByGameId(gameId) {
-    return db.query("UPDATE games SET stock=stock-1 WHERE id=$1", [gameId]);
-}
-
 const gamesRepository = {
     findAll,
     findByName,
+    findById,
     create,
-    reduceStockByGameId,
 };
 export default gamesRepository;

@@ -6,7 +6,7 @@ async function getAll(res, name, offset, limit, order, desc) {
         const games = await gamesRepository.findAll(name, offset, limit, order, desc);
         return games.rows;
     } catch (error) {
-        sendErrorResponse(res);
+        sendErrorResponse(res, { type: "serverError" });
     }
 }
 
@@ -20,7 +20,7 @@ async function create(res, name, stock, pricePerDay) {
         await gamesRepository.create(name, stock, pricePerDay);
     } catch (error) {
         console.log(error);
-        sendErrorResponse(res);
+        sendErrorResponse(res, { type: "serverError" });
     }
 }
 
