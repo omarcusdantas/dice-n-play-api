@@ -48,6 +48,12 @@ async function update(req, res) {
         return;
     }
 
+    const foundUser = await customersService.getById(res, id);
+    if (!foundUser) {
+        sendErrorResponse(res, { type: "notFound", message: "Customer not found" });
+        return;
+    }
+
     const { name, phone, birthday } = req.body;
     try {
         await customersService.updateById(res, id, name, phone, birthday);
