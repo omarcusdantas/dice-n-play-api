@@ -4,9 +4,9 @@ import customersRepository from "../repositories/customers.repository.js";
 import gamesRepository from "../repositories/games.repository.js";
 import sendErrorResponse from "../errors/sendErrorResponse.js";
 
-async function getAll(res, customerId, gameId, offset, limit, order, desc) {
+async function getAll(res, customerId, gameId, offset, limit, order, desc, status) {
     try {
-        const rentals = await rentalsRepository.findAll(customerId, gameId, offset, limit, order, desc);
+        const rentals = await rentalsRepository.findAll(customerId, gameId, offset, limit, order, desc, status);
 
         const formattedRentals = rentals.rows.map((rental) => {
             const formattedRental = {

@@ -1,6 +1,6 @@
 import { db } from "../database/database.connection.js";
 
-function findAll(customerId, gameId, offset, limit, order, desc, status, startDate) {
+function findAll(customerId, gameId, offset, limit, order, desc, status) {
     let query = `
         SELECT 
             r.id AS "id",
@@ -34,12 +34,6 @@ function findAll(customerId, gameId, offset, limit, order, desc, status, startDa
         const filter = status === "open" ? "rentals.return_date IS NULL" : "rentals.return_date IS NOT NULL";
         query += query.includes("WHERE") ? " AND " : " WHERE ";
         query += filter;
-    }
-
-    if (startDate) {
-        query += query.includes("WHERE") ? " AND " : " WHERE ";
-        query += `rentals.rent_date >= $${queryParams.length + 1}`;
-        queryParams.push(startDate);
     }
 
     if (order) {

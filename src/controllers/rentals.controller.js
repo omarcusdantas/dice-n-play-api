@@ -3,9 +3,9 @@ import rentalsService from "../services/rentals.service.js";
 import sendErrorResponse from "../errors/sendErrorResponse.js";
 
 async function getAll(req, res) {
-    const { customerId, gameId, offset, limit, order, desc } = req.query;
+    const { customerId, gameId, offset, limit, order, desc, status } = req.query;
     try {
-        const rentals = await rentalsService.getAll(res, customerId, gameId, offset, limit, order, desc);
+        const rentals = await rentalsService.getAll(res, customerId, gameId, offset, limit, order, desc, status);
         res.writeHead(httpStatus.OK, { "Content-Type": "application/json" });
         return res.end(JSON.stringify(rentals));
     } catch (error) {
