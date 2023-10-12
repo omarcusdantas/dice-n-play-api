@@ -4,7 +4,7 @@ import gamesService from "../services/games.service.js";
 async function getAll(req, res) {
     const { name, offset, limit, order, desc } = req.query;
     try {
-        const games = await gamesService.findAll(res, name, offset, limit, order, desc);
+        const games = await gamesService.getAll(res, name, offset, limit, order, desc);
         res.writeHead(httpStatus.OK, { "Content-Type": "application/json" });
         return res.end(JSON.stringify(games));
     } catch (error) {

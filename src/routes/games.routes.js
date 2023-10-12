@@ -5,9 +5,10 @@ import validateSchema from "../middlewares/validateSchema.js";
 import { schemaGame } from "../schemas/games.schemas.js";
 
 export default async function gamesRouter(req, res) {
-    if (req.method === "GET") {
+    if (req.method === "GET" && req.path === "/games") {
+        console.log("oi")
         gamesController.getAll(req, res);
-    } else if (req.method === "POST") {
+    } else if (req.method === "POST" && req.path === "/games") {
         req.body = await parseBody(req);
         await validateSchema(res, req.body, schemaGame);
         gamesController.create(req, res);

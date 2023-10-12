@@ -22,7 +22,7 @@ async function getById(req, res) {
     }
 
     try {
-        const customer = await customersService.getdById(res, id);
+        const customer = await customersService.getById(res, id);
         res.writeHead(httpStatus.OK, { "Content-Type": "application/json" });
         return res.end(JSON.stringify(customer));
     } catch (error) {

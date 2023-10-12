@@ -7,7 +7,7 @@ import { schemaRental } from "../schemas/rentals.schemas.js";
 export default async function rentalsRouter(req, res) {
     if (req.method === "GET" && req.path === "/rentals") {
         rentalsController.getAll(req, res);
-    } else if (req.method === "POST") {
+    } else if (req.method === "POST" && req.path === "/rentals") {
         req.body = await parseBody(req, res);
         await validateSchema(res, req.body, schemaRental);
         rentalsController.create(req, res);

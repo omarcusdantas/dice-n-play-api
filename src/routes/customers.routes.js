@@ -9,7 +9,7 @@ export default async function customersRouter(req, res) {
         customersController.getAll(req, res);
     } else if (req.method === "GET" && req.path.startsWith("/customers/")) {
         customersController.getById(req, res);
-    } else if (req.method === "POST") {
+    } else if (req.method === "POST" && req.path === "/customers") {
         req.body = await parseBody(req, res);
         await validateSchema(res, req.body, schemaCustomer);
         customersController.create(req, res);
