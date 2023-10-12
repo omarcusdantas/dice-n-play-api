@@ -6,7 +6,6 @@ import { schemaGame } from "../schemas/games.schemas.js";
 
 export default async function gamesRouter(req, res) {
     if (req.method === "GET" && req.path === "/games") {
-        console.log("oi")
         gamesController.getAll(req, res);
     } else if (req.method === "POST" && req.path === "/games") {
         req.body = await parseBody(req);
